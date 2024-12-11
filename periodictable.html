@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Periodic Table Lookup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Periodic Table Lookup</h1>
+    <input type="text" id="elementInput" placeholder="Enter element name or symbol">
+    <button onclick="lookupElement()">Search</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+const periodicTable = {
+    'al': { name: 'Aluminium', protonNumber: 13, atomicMass: 27.0 },
+    'ag': { name: 'Silver', protonNumber: 47, atomicMass: 107.9 },
+    'ar': { name: 'Argon', protonNumber: 18, atomicMass: 40.0 },
+    'as': { name: 'Arsenic', protonNumber: 33, atomicMass: 74.9 },
+    'au': { name: 'Gold', protonNumber: 79, atomicMass: 197.0 },
+    'ba': { name: 'Barium', protonNumber: 56, atomicMass: 137.3 },
+    'be': { name: 'Beryllium', protonNumber: 4, atomicMass: 9.0 },
+    'bi': { name: 'Bismuth', protonNumber: 83, atomicMass: 209.0 },
+    'b':  { name: 'Boron', protonNumber: 5, atomicMass: 10.8 },
+    'br': { name: 'Bromine', protonNumber: 35, atomicMass: 79.9 },
+    'fe': { name: 'Iron', protonNumber: 26, atomicMass: 55.9 },
+    'f':  { name: 'Fluorine', protonNumber: 9, atomicMass: 19.0 },
+    'p':  { name: 'Phosphorus', protonNumber: 15, atomicMass: 31.0 },
+    'he': { name: 'Helium', protonNumber: 2, atomicMass: 4.0 },
+    'hg': { name: 'Mercury', protonNumber: 80, atomicMass: 200.6 },
+    'h':  { name: 'Hydrogen', protonNumber: 1, atomicMass: 1.0 },
+    'i':  { name: 'Iodine', protonNumber: 53, atomicMass: 126.9 },
+    'cd': { name: 'Cadmium', protonNumber: 48, atomicMass: 112.4 },
+    'k':  { name: 'Potassium', protonNumber: 19, atomicMass: 39.1 },
+    'ca': { name: 'Calcium', protonNumber: 20, atomicMass: 40.1 },
+    'c':  { name: 'Carbon', protonNumber: 6, atomicMass: 12.0 },
+    'cl': { name: 'Chlorine', protonNumber: 17, atomicMass: 35.5 },
+    'co': { name: 'Cobalt', protonNumber: 27, atomicMass: 58.9 },
+    'kr': { name: 'Krypton', protonNumber: 36, atomicMass: 83.8 },
+    'cr': { name: 'Chromium', protonNumber: 24, atomicMass: 52.0 },
+    'cu': { name: 'Copper', protonNumber: 29, atomicMass: 63.6 },
+    'li': { name: 'Lithium', protonNumber: 3, atomicMass: 6.9 },
+    'mg': { name: 'Magnesium', protonNumber: 12, atomicMass: 24.3 },
+    'mn': { name: 'Manganese', protonNumber: 25, atomicMass: 54.9 },
+    'na': { name: 'Sodium', protonNumber: 11, atomicMass: 23.0 },
+    'ne': { name: 'Neon', protonNumber: 10, atomicMass: 20.2 },
+    'ni': { name: 'Nickel', protonNumber: 28, atomicMass: 58.7 },
+    'n':  { name: 'Nitrogen', protonNumber: 7, atomicMass: 14.0 },
+    'o':  { name: 'Oxygen', protonNumber: 8, atomicMass: 16.0 },
+    'pt': { name: 'Platinum', protonNumber: 78, atomicMass: 195.1 },
+    'pb': { name: 'Lead', protonNumber: 82, atomicMass: 207.2 },
+    'pa': { name: 'Protactinium', protonNumber: 91, atomicMass: 231.0 },
+    'ra': { name: 'Radium', protonNumber: 88, atomicMass: 226.0 },
+    'rn': { name: 'Radon', protonNumber: 86, atomicMass: 222.0 },
+    'rb': { name: 'Rubidium', protonNumber: 37, atomicMass: 85.5 },
+    'se': { name: 'Selenium', protonNumber: 34, atomicMass: 79.0 },
+    'ce': { name: 'Cerium', protonNumber: 58, atomicMass: 140.1 },
+    'cs': { name: 'Caesium', protonNumber: 55, atomicMass: 132.9 },
+    'si': { name: 'Silicon', protonNumber: 14, atomicMass: 28.1 },
+    'sc': { name: 'Scandium', protonNumber: 21, atomicMass: 45.0 },
+    'sn': { name: 'Tin', protonNumber: 50, atomicMass: 118.7 },
+    'sb': { name: 'Antimony', protonNumber: 51, atomicMass: 121.8 },
+    'sr': { name: 'Strontium', protonNumber: 38, atomicMass: 87.6 },
+    's':  { name: 'Sulphur', protonNumber: 16, atomicMass: 32.1 },
+    'u':  { name: 'Uranium', protonNumber: 92, atomicMass: 238.0 },
+    'w':  { name: 'Tungsten', protonNumber: 74, atomicMass: 183.9 },
+    'zn': { name: 'Zinc', protonNumber: 30, atomicMass: 65.4 },
+};
+
+function lookupElement() {
+    const input = document.getElementById('elementInput').value.trim().toLowerCase();
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = ''; // Clear previous result
+
+    if (!input) {
+        resultDiv.innerHTML = '<p class="error">Please enter an element name or symbol.</p>';
+        return;
+    }
+
+    let elementKey = Object.keys(periodicTable).find(
+        key => key === input || periodicTable[key].name.toLowerCase() === input
+    );
+    const element = periodicTable[elementKey];
+
+    if (!elementKey) {
+        resultDiv.innerHTML = `<p class="error">Element '${input}' not found in the periodic table.</p>`;
+        return;
+    }
+
+    resultDiv.innerHTML = `
+        <h3>${element.name}</h3>
+        <p><strong>Symbol:</strong> ${elementKey.toUpperCase()}</p>
+        <p><strong>Proton Number:</strong> ${element.protonNumber}</p>
+        <p><strong>Atomic Mass:</strong> ${element.atomicMass} u</p>
+    `;
+}
+</script>
+
+</body>
+</html>
